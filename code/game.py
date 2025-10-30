@@ -81,6 +81,11 @@ class Game:
             else:
                 self.spawn_position.append((obj.x, obj.y))
 
+    def bullet_collision(self):
+        if self.bullet_sprite:
+            for bullet in self.bullet_sprite:
+                collision_sprite = pygame.sprite.spritecollide(bullet, self.enemy_sprite, True, pygame.sprite.collide_mask)
+
     def run(self):
         while True:
             # Delta time
@@ -97,6 +102,7 @@ class Game:
 
             # Update
             self.all_sprite.update(dt)
+            self.bullet_collision()
 
             # Draw
             self.display_surface.fill((0,0,30))
