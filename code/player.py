@@ -5,7 +5,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load(join('images', 'player', 'down', '0.png')).convert_alpha()
         self.rect = self.image.get_frect(center = pos)
-        self.hitbox_rect = self.rect.inflate(-40, 0)
+        self.hitbox_rect = self.rect.inflate(-60, 0)
 
         # Movement
         self.direction = pygame.math.Vector2()
@@ -22,11 +22,10 @@ class Player(pygame.sprite.Sprite):
     
     def move(self, dt):
         self.hitbox_rect.left += self.direction.x * self.speed * dt
-        self.rect.center = self.hitbox_rect.center
         self.collision('Horizontal')
         self.hitbox_rect.top += self.direction.y * self.speed * dt
-        self.rect.center = self.hitbox_rect.center
         self.collision('Vertical')
+        self.rect.center = self.hitbox_rect.center
 
     def collision(self, direction):
         for sprite in self.collision_sprite:
