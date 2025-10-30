@@ -3,6 +3,7 @@ from settings import *
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups, collision_sprites, pos):
         super().__init__(groups)
+        self.load_images()
         self.image = pygame.image.load(join('images', 'player', 'down', '0.png')).convert_alpha()
         self.rect = self.image.get_frect(center = pos)
         self.hitbox_rect = self.rect.inflate(-70, -90)
@@ -12,6 +13,16 @@ class Player(pygame.sprite.Sprite):
         self.speed = 300
         self.collision_sprite = collision_sprites
 
+    def load_images(self):
+        self.frames = {'left' : [], 'right' : [], 'up' : [], 'down' : []}
+
+        for state in self.frames.keys():
+            for folder_path, sub_folder, file_names in walk(join('images', 'player', state)):
+                if file_names:
+                    for file_name in file_names:
+                        full_path = join(folder_path, file_name)
+                        surf = pygame.image.load(full_path).convert_alpha()
+                        self.frames[state].append(surf)
     def input(self):
         key_pressed = pygame.key.get_pressed()
 
@@ -36,7 +47,6 @@ class Player(pygame.sprite.Sprite):
                 else:
                     if self.direction.y < 0: self.hitbox_rect.top = sprite.rect.bottom
                     if self.direction.y > 0: self.hitbox_rect.bottom = sprite.rect.top  
-
 
     def update(self, dt):
         self.input()
