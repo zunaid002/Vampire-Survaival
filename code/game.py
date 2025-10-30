@@ -84,7 +84,11 @@ class Game:
     def bullet_collision(self):
         if self.bullet_sprite:
             for bullet in self.bullet_sprite:
-                collision_sprite = pygame.sprite.spritecollide(bullet, self.enemy_sprite, True, pygame.sprite.collide_mask)
+                collision_sprite = pygame.sprite.spritecollide(bullet, self.enemy_sprite, False, pygame.sprite.collide_mask)
+                if collision_sprite:
+                    for sprite in collision_sprite:
+                        sprite.destroy()
+
 
     def run(self):
         while True:
