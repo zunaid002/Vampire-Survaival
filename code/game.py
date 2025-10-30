@@ -49,5 +49,5 @@ class Game:
 
             # Draw
             self.display_surface.fill((0,0,30))
-            self.all_sprite.draw()
+            self.all_sprite.draw(self.player.rect.center)
             pygame.display.update()
