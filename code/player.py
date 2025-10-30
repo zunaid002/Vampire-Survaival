@@ -5,7 +5,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load(join('images', 'player', 'down', '0.png')).convert_alpha()
         self.rect = self.image.get_frect(center = pos)
-        self.hitbox_rect = self.rect.inflate(-70, -30)
+        self.hitbox_rect = self.rect.inflate(-70, -90)
 
         # Movement
         self.direction = pygame.math.Vector2()
@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = key_pressed[pygame.K_DOWN] - key_pressed[pygame.K_UP]
 
         self.direction = self.direction.normalize() if self.direction else self.direction
-    
+
     def move(self, dt):
         self.hitbox_rect.left += self.direction.x * self.speed * dt
         self.collision('Horizontal')
