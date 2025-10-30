@@ -76,7 +76,7 @@ class Enemy(pygame.sprite.Sprite):
         # Rect
         self.rect = self.image.get_frect(center = pos)
         self.hitbox_rect = self.rect.inflate(-20, -40)
-        self.collision = collision_sprite
+        self.collision_sprite = collision_sprite
         self.direction = pygame.math.Vector2()
         self.speed = 350
 
@@ -88,13 +88,25 @@ class Enemy(pygame.sprite.Sprite):
         self.direction = (player_pos - enemy_pos).normalize()
 
         # update the rect position and collision logic
-        self.rect.center += self.direction * self.speed * dt
+        self.hitbox_rect.x += self.direction.x * self.speed * dt
+        self.collision('Horizontal')
+        self.hitbox_rect.y += self.direction.y * self.speed * dt
+        self.collision('Vertical')
+        self.rect.center = self.hitbox_rect.center
 
     def animate(self, dt):
         self.frame_index += self.animation_speed * dt
         self.image = self.frames[int(self.frame_index) % len(self.frames)]
 
-
+    def collision(self, direction):
+        for sprite in self.collision_sprite:
+            if sprite.rect.colliderect(self.hitbox_rect):
+                if direction == 'Horizontal':
+                    if self.direction.x > 0: self.hitbox_rect.right = sprite.rect.left  
+                    if self.direction.x < 0: self.hitbox_rect.left = sprite.rect.right
+                else:
+                    if self.direction.y < 0: self.hitbox_rect.top = sprite.rect.bottom
+                    if self.direction.y > 0: self.hitbox_rect.bottom = sprite.rect.top  
     
     def update(self, dt):
         self.move(dt)
