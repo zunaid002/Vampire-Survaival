@@ -13,6 +13,7 @@ class Game:
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Vampire Survavial")
         self.clock = pygame.time.Clock()
+        self.running = True
 
         # Groups
         self.all_sprite = AllSprites()
@@ -88,16 +89,20 @@ class Game:
                 if collision_sprite:
                     for sprite in collision_sprite:
                         sprite.destroy()
+                    bullet.kill()
 
-
+    def player_collision(self):
+        if pygame.sprite.spritecollide(self.player, self.enemy_sprite, False, pygame.sprite.collide_mask):
+            self.running = False
+        
     def run(self):
-        while True:
+        while self.running:
             # Delta time
             dt = self.clock.tick(100) / 1000
             # Event loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return
+                    self.running = False
                 if event.type == self.enemy_event:
                     Enemy((self.all_sprite, self.enemy_sprite), choice(list(self.enemy_frames.values())), self.player, choice(self.spawn_position), self.collision_sprite)
                     
@@ -107,6 +112,7 @@ class Game:
             # Update
             self.all_sprite.update(dt)
             self.bullet_collision()
+            self.player_collision()
 
             # Draw
             self.display_surface.fill((0,0,30))
