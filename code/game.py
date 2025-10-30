@@ -13,12 +13,36 @@ class Game:
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Vampire Survavial")
         self.clock = pygame.time.Clock()
+        self.load_images()
 
         # Groups
         self.all_sprite = AllSprites()
         self.collision_sprite = pygame.sprite.Group()
+        self.bullet_sprite = pygame.sprite.Group()
 
         self.setup()
+
+        # Gun timer
+        self.can_shoot = True
+        self.shoot_time = 0
+        self.gun_cooldown = 1
+
+    def load_images(self):
+        self.bullet_surf = pygame.image.load(join('images', 'gun', 'bullet.png')).convert_alpha()
+
+    def gun_timer(self):
+        if not self.can_shoot:
+            if pygame.time.get_ticks() > self.shoot_time + self.gun_cooldown:
+                self.can_shoot = True
+
+    def input(self):
+        self.gun_timer()
+        if pygame.mouse.get_pressed()[0] and self.can_shoot:
+            pos = self.gun.rect.center + self.gun.player_direction * 50
+            Bullet((self.all_sprite, self.bullet_sprite), self.bullet_surf, pos, self.gun.player_direction)
+            self.can_shoot = False
+            self.shoot_time = pygame.time.get_ticks()
+
 
     def setup(self):
         map = load_pygame(join('data','maps', 'world.tmx'))
@@ -46,6 +70,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     return
             
+            # Input
+            self.input()
+
             # Update
             self.all_sprite.update(dt)
 
